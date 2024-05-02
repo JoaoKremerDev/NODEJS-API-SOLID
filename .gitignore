@@ -33,3 +33,6 @@ config.json
 
 # Arquivos de cache
 .cache/
+
+# Arquivos de teste
+coverage
