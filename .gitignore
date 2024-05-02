@@ -1,0 +1,35 @@
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+
+# Diretório de dependências npm
+node_modules
+
+# Arquivos de log
+*.log
+
+# Arquivos de ambiente local
+.env
+
+# Diretório de arquivos temporários
+tmp/
+
+# Arquivos de backup
+*.bak
+
+# Arquivos de build e distribuição
+/dist/
+/out/
+
+# Arquivos de configuração locais
+config.json
+
+# Arquivos de Prisma
+/prisma/dev.db
+/prisma/migrations/
+
+# Docker
+.dockerignore
+.docker/
+
+# Arquivos de cache
+.cache/
