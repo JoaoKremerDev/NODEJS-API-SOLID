@@ -1,17 +1,21 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-check-ins-repository'
 import { CheckInUseCase } from './check-in'
 import { GymsRepository } from '@/repositories/gyms-repository'
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository'
 import { Decimal } from '@prisma/client/runtime/library'
+import { MaxDistanceError } from './errors/max-distance-error'
+import { MaxNumberOfCheckInsError } from './errors/max-numbers-of-check-ins-error'
 
 let checkInsRepository: InMemoryCheckInsRepository
 let gymsRepository: GymsRepository
 let sut: CheckInUseCase
 
 describe('Check-ins', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInsRepository = new InMemoryCheckInsRepository()
+    // @ts-expect-error
     gymsRepository = new InMemoryGymsRepository()
     sut = new CheckInUseCase(checkInsRepository, gymsRepository)
 
@@ -22,6 +26,15 @@ describe('Check-ins', () => {
       phone: '',
       latitude: new Decimal(-20.5813577),
       longitude: new Decimal(-40.5500576),
+    })
+
+    await gymsRepository.create({
+      id: 'gym-01',
+      title: 'JavaScript Gym',
+      description: '',
+      phone: '',
+      latitude: -20.5813577,
+      longitude: -40.5500576,
     })
     vi.useFakeTimers()
   })
@@ -59,7 +72,7 @@ describe('Check-ins', () => {
         userLatitude: -20.5813577,
         userLongitude: -40.5500576,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError)
   })
 
   it('should be able to check in twice but in different days', async () => {
@@ -101,6 +114,6 @@ describe('Check-ins', () => {
         userLatitude: -20.5813577,
         userLongitude: -40.5500576,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })
